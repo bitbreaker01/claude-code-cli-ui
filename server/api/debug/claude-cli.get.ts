@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs'
+import { accessSync, constants as fsConstants, existsSync } from 'node:fs'
 import { join } from 'node:path'
 
 export default defineEventHandler(() => {
@@ -36,10 +36,9 @@ export default defineEventHandler(() => {
 
 function checkAccess(filePath: string): boolean {
   try {
-    const fs = require('node:fs')
-    fs.accessSync(filePath, fs.constants.F_OK)
+    accessSync(filePath, fsConstants.F_OK)
     if (process.platform !== 'win32') {
-      fs.accessSync(filePath, fs.constants.X_OK)
+      accessSync(filePath, fsConstants.X_OK)
     }
     return true
   } catch {

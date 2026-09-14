@@ -1,6 +1,7 @@
 import { spawn as ptySpawn, type IPty } from 'node-pty'
 import { randomUUID } from 'node:crypto'
 import fs from 'node:fs/promises'
+import { accessSync, constants as fsConstants } from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
 import type { FSWatcher } from 'chokidar'
@@ -399,12 +400,11 @@ function getClaudePath(): string | null {
  */
 function existsSync(filePath: string): boolean {
   try {
-    const fs = require('node:fs')
     // First check if file exists at all
-    fs.accessSync(filePath, fs.constants.F_OK)
+    accessSync(filePath, fsConstants.F_OK)
     // Then check if it's executable (on Unix systems)
     if (process.platform !== 'win32') {
-      fs.accessSync(filePath, fs.constants.X_OK)
+      accessSync(filePath, fsConstants.X_OK)
     }
     return true
   } catch (error: any) {
